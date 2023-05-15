@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS `sistema_hospital`.`Hospital` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `nome` VARCHAR(45) NOT NULL,
   `endereco` VARCHAR(150) NOT NULL,
-  `cep` VARCHAR(8) NOT NULL,
+  `cep` VARCHAR(10) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `idHospital_UNIQUE` (`id` ASC) VISIBLE)
 ENGINE = InnoDB;
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `sistema_hospital`.`Clinica` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `nome` VARCHAR(45) NOT NULL,
   `endereco` VARCHAR(150) NOT NULL,
-  `cep` VARCHAR(8) NOT NULL,
+  `cep` VARCHAR(10) NOT NULL,
   `Hospital_idHospital` INT NOT NULL,
   PRIMARY KEY (`id`, `Hospital_idHospital`),
   UNIQUE INDEX `idClinica_UNIQUE` (`id` ASC) VISIBLE,
@@ -165,22 +165,39 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `sistema_hospital`.`Medico_has_Paciente`
+-- Table `sistema_hospital`.`Prontuario`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `sistema_hospital`.`Medico_has_Paciente` (
-  `Medico_idMedico` INT NOT NULL,
-  `Paciente_idPaciente` INT NOT NULL,
-  PRIMARY KEY (`Medico_idMedico`, `Paciente_idPaciente`),
-  INDEX `fk_Medico_has_Paciente_Paciente1_idx` (`Paciente_idPaciente` ASC) VISIBLE,
-  INDEX `fk_Medico_has_Paciente_Medico1_idx` (`Medico_idMedico` ASC) VISIBLE,
-  CONSTRAINT `fk_Medico_has_Paciente_Medico1`
-    FOREIGN KEY (`Medico_idMedico`)
+CREATE TABLE IF NOT EXISTS `sistema_hospital`.`Prontuario` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `descricao` VARCHAR(700) NULL,
+  `Medico_id` INT NOT NULL,
+  `Clinica_id` INT NOT NULL,
+  `Clinica_Hospital_idHospital` INT NOT NULL,
+  `Paciente_id` INT NOT NULL,
+  `Doenca_id` INT NOT NULL,
+  PRIMARY KEY (`id`, `Medico_id`, `Clinica_id`, `Clinica_Hospital_idHospital`, `Paciente_id`, `Doenca_id`),
+  INDEX `fk_Prontuario_Medico1_idx` (`Medico_id` ASC) VISIBLE,
+  INDEX `fk_Prontuario_Clinica1_idx` (`Clinica_id` ASC, `Clinica_Hospital_idHospital` ASC) VISIBLE,
+  INDEX `fk_Prontuario_Paciente1_idx` (`Paciente_id` ASC) VISIBLE,
+  INDEX `fk_Prontuario_Doenca1_idx` (`Doenca_id` ASC) VISIBLE,
+  CONSTRAINT `fk_Prontuario_Medico1`
+    FOREIGN KEY (`Medico_id`)
     REFERENCES `sistema_hospital`.`Medico` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Medico_has_Paciente_Paciente1`
-    FOREIGN KEY (`Paciente_idPaciente`)
+  CONSTRAINT `fk_Prontuario_Clinica1`
+    FOREIGN KEY (`Clinica_id` , `Clinica_Hospital_idHospital`)
+    REFERENCES `sistema_hospital`.`Clinica` (`id` , `Hospital_idHospital`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Prontuario_Paciente1`
+    FOREIGN KEY (`Paciente_id`)
     REFERENCES `sistema_hospital`.`Paciente` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Prontuario_Doenca1`
+    FOREIGN KEY (`Doenca_id`)
+    REFERENCES `sistema_hospital`.`Doenca` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
