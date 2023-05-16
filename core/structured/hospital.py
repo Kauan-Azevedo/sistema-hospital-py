@@ -8,7 +8,7 @@ def create_hospital(db_conn, name: str, address: str, cep: str):
         db_conn.commit()
     except:
         print("Falha ao inserir os dados")
-    finally:
+    else:
         print("Dados salvos com sucesso!")
 
     cursor.close()
@@ -44,8 +44,8 @@ def update_hospital(db_conn, hospital_name: str, name: str, address: str, cep: s
         db_conn.commit()
     except:
         print("Ocorreu um erro ao executar a acao")
-    finally:
-        print("Dados alter com sucesso!")
+    else:
+        print("Dados alterados com sucesso!")
         
     cursor.close()
     
@@ -59,9 +59,7 @@ def delete_hospital(db_conn, name: str):
         db_conn.commit()
     except:
         print("Falha ao deletar os dados")
-    finally:
+    else:
         affected_rows = cursor.rowcount
         print(f"{affected_rows} registros atualizados.")
 
-
-        
