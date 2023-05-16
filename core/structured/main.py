@@ -7,8 +7,45 @@ db_conn = mysql.connector.connect(
     database="sistema_hospital"
 )
 
-cursor = db_conn.cursor()
-cursor.close()
+def create_hospital(nome: str, endereco: str, cep: str):
+    cursor = db_conn.cursor()
+    
+    try:
+        query = '''
+        INSERT INTO Hospital(nome, endereco, cep) VALUES(%s, %s, %s)
+        '''
+        hospital = (nome, endereco, cep)
+        cursor.execute(query, hospital)
+        db_conn.commit()
+    except:
+        print("Falha ao inserir os dados")
+    finally:
+        print("Dados salvos com sucesso!")
+
+    cursor.close()
+
+def read_all_hospital():
+    cursor = db_conn.cursor()
+    
+    try:
+        query = '''
+        SELECT * FROM Hospital
+        '''
+        cursor.execute(query)
+        result = cursor.fetchall()
+        
+        print("\n+---------- Hospitais ----------+\n")
+        for row in result:
+            print(f"Id: {row[0]}\nNome: {row[1]}\nEndereco: {row[2]}\nCep: {row[3]}")
+
+            print("+--------------------+")
+        print("\n+---------- Fim ----------+")
+        
+    except:
+        print("Falha ao completar a tarefa")
+
+
+    cursor.close()
 
 def main() -> None:
     sair = False
@@ -25,6 +62,7 @@ def main() -> None:
         if escolha == 0:
             print("\nAté mais!")
             break
+
         elif escolha == 1:
             nome: str = ""
             endereco: str = ""
@@ -37,10 +75,17 @@ def main() -> None:
             except:
                 print("Valores invalidos!")
             finally:
-                if not nome == "" or not endereco == "" or not cep == "":
-                    print("Dados salvos!")
-                else:
+                if nome == "" or endereco == "" or cep == "":
                     print("Nome, Endereco e/ou Cep invalido(s)")
+                else:
+                    create_hospital(nome, endereco, cep)
+
+        elif escolha == 2:
+            try:
+                read_all_hospital()
+                                
+            except:
+                print("Falha ao completar a requisicao")
 
         else:
             print("Valor Invalido!\n")
