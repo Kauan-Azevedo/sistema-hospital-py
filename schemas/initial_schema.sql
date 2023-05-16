@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `sistema_hospital`.`Clinica` (
   CONSTRAINT `fk_Clinica_Hospital`
     FOREIGN KEY (`Hospital_idHospital`)
     REFERENCES `sistema_hospital`.`Hospital` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
@@ -108,12 +108,12 @@ CREATE TABLE IF NOT EXISTS `sistema_hospital`.`Clinica_has_Doutor` (
   CONSTRAINT `fk_Clinica_has_Doutor_Clinica1`
     FOREIGN KEY (`Clinica_idClinica` , `Clinica_Hospital_idHospital`)
     REFERENCES `sistema_hospital`.`Clinica` (`id` , `Hospital_idHospital`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE/
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Clinica_has_Doutor_Doutor1`
     FOREIGN KEY (`Doutor_idDoutor`)
     REFERENCES `sistema_hospital`.`Medico` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
@@ -132,12 +132,12 @@ CREATE TABLE IF NOT EXISTS `sistema_hospital`.`Paciente_has_Clinica` (
   CONSTRAINT `fk_Paciente_has_Clinica_Paciente1`
     FOREIGN KEY (`Paciente_idPaciente`)
     REFERENCES `sistema_hospital`.`Paciente` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Paciente_has_Clinica_Clinica1`
     FOREIGN KEY (`Clinica_idClinica` , `Clinica_Hospital_idHospital`)
     REFERENCES `sistema_hospital`.`Clinica` (`id` , `Hospital_idHospital`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
@@ -154,12 +154,12 @@ CREATE TABLE IF NOT EXISTS `sistema_hospital`.`Doenca_has_Paciente` (
   CONSTRAINT `fk_Doenca_has_Paciente_Doenca1`
     FOREIGN KEY (`Doenca_idDoenca`)
     REFERENCES `sistema_hospital`.`Doenca` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Doenca_has_Paciente_Paciente1`
     FOREIGN KEY (`Paciente_idPaciente`)
     REFERENCES `sistema_hospital`.`Paciente` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
@@ -183,22 +183,22 @@ CREATE TABLE IF NOT EXISTS `sistema_hospital`.`Prontuario` (
   CONSTRAINT `fk_Prontuario_Medico1`
     FOREIGN KEY (`Medico_id`)
     REFERENCES `sistema_hospital`.`Medico` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Prontuario_Clinica1`
     FOREIGN KEY (`Clinica_id` , `Clinica_Hospital_idHospital`)
     REFERENCES `sistema_hospital`.`Clinica` (`id` , `Hospital_idHospital`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Prontuario_Paciente1`
     FOREIGN KEY (`Paciente_id`)
     REFERENCES `sistema_hospital`.`Paciente` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Prontuario_Doenca1`
     FOREIGN KEY (`Doenca_id`)
     REFERENCES `sistema_hospital`.`Doenca` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 

@@ -23,7 +23,7 @@ def create_hospital(nome: str, endereco: str, cep: str):
         print("Dados salvos com sucesso!")
 
     cursor.close()
-
+    
 def read_all_hospital():
     cursor = db_conn.cursor()
     
@@ -63,6 +63,21 @@ def update_hospital(hospital_name: str, name: str, endereco: str, cep: str):
         print("Dados alter com sucesso!")
         
     cursor.close()
+    
+def delete_hospital(nome: str):
+    cursor = db_conn.cursor()
+
+    try:
+        query = '''
+        DELETE FROM Hospital WHERE nome = %s
+        '''
+        hospital = (nome)
+        cursor.execute(query, hospital)
+        db_conn.commit()
+    except:
+        print("Falha ao deletar os dados")
+    finally:
+        print("Dados deletados com sucesso!")
 
 def main() -> None:
     sair = False
@@ -72,7 +87,7 @@ def main() -> None:
     while not sair:
         print("\n0 - Sair\n1 - Registrar Hospital\n2 - Listar Hospitais\n3 - Atualizar Hospital")
         try:
-            escolha = int(input("Escolha: "))333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333
+            escolha = int(input("Escolha: "))
         except:
             print("\nSomente numeros sao validos!")
 
@@ -92,15 +107,11 @@ def main() -> None:
             except:
                 print("Valores invalidos!")
             finally:
-                if nome == "" or endereco == "" or cep == "":
-                    print("Nome, Endereco e/ou Cep invalido(s)")
-                else:
-                    create_hospital(nome, endereco, cep)
+                create_hospital(nome, endereco, cep)
 
         elif escolha == 2:
             try:
-                read_all_hospital()
-                                
+                read_all_hospital()                
             except:
                 print("Falha ao completar a requisicao")
 
@@ -120,6 +131,18 @@ def main() -> None:
             finally:
                 update_hospital(hospital_name=nome_hospital, name=nome, cep=cep, endereco=endereco)
 
+        elif escolha == 4:
+            nome_hospital: str = ""
+
+            try:
+                nome_hospital = str(input("(Hospital)[DELETE] Nome do hospital a ser deletado: "))
+
+            except:
+                print("Valores invalidos!")
+                pass
+            finally:
+                delete_hospital(nome_hospital)
+                
         else:
             print("Valor Invalido!\n")
             
