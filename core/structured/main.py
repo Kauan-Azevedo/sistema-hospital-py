@@ -47,6 +47,23 @@ def read_all_hospital():
 
     cursor.close()
 
+def update_hospital(hospital_name: str, name: str, endereco: str, cep: str):
+    cursor = db_conn.cursor()
+
+    try:
+        query = '''
+        UPDATE Hospital SET nome = %s, endereco = %s, cep = %s WHERE nome = %s
+        '''
+        hospital = (name, endereco, cep, hospital_name)
+        cursor.execute(query, hospital)
+        db_conn.commit()
+    except:
+        print("Ocorreu um erro ao executar a acao")
+    finally:
+        print("Dados alter com sucesso!")
+        
+    cursor.close()
+
 def main() -> None:
     sair = False
     escolha: int = 0
@@ -55,7 +72,7 @@ def main() -> None:
     while not sair:
         print("\n0 - Sair\n1 - Registrar Hospital\n2 - Listar Hospitais\n3 - Atualizar Hospital")
         try:
-            escolha = int(input("Escolha: "))
+            escolha = int(input("Escolha: "))333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333
         except:
             print("\nSomente numeros sao validos!")
 
@@ -87,9 +104,25 @@ def main() -> None:
             except:
                 print("Falha ao completar a requisicao")
 
+        elif escolha == 3:
+            nome_hospital: str = ""
+            nome: str = ""
+            endereco: str = ""
+            cep: str = ""
+
+            try:
+                nome_hospital = str(input("(Hospital)[UPDATE] Nome do hospital a ser alterado: "))
+                nome = str(input("(Hospital)[UPDATE] Digite o nome: "))
+                endereco = str(input("(Hospital)[UPDATE] Digite o endereco: "))
+                cep = str(input("(Hospital)[UPDATE] Digite o CEP: "))
+            except:
+                print("Valores invalidos!")
+            finally:
+                update_hospital(hospital_name=nome_hospital, name=nome, cep=cep, endereco=endereco)
+
         else:
             print("Valor Invalido!\n")
-
+            
 
 if __name__ == "__main__":
     main()
