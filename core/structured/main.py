@@ -7,15 +7,13 @@ db_conn = mysql.connector.connect(
     database="sistema_hospital"
 )
 
-def create_hospital(nome: str, endereco: str, cep: str):
+def create_hospital(name: str, address: str, cep: str):
     cursor = db_conn.cursor()
     
     try:
-        query = '''
-        INSERT INTO Hospital(nome, endereco, cep) VALUES(%s, %s, %s)
-        '''
-        hospital = (nome, endereco, cep)
-        cursor.execute(query, hospital)
+        query: str = "INSERT INTO Hospital(nome, endereco, cep) VALUES(%(name)s, %(address)s, %(cep)s)"
+        query_params: dict = {"name": name, "address": address, "cep": cep}
+        cursor.execute(query, query_params)
         db_conn.commit()
     except:
         print("Falha ao inserir os dados")
@@ -28,9 +26,7 @@ def read_all_hospital():
     cursor = db_conn.cursor()
     
     try:
-        query = '''
-        SELECT * FROM Hospital
-        '''
+        query: str = "SELECT * FROM Hospital"
         cursor.execute(query)
         result = cursor.fetchall()
         
@@ -47,15 +43,13 @@ def read_all_hospital():
 
     cursor.close()
 
-def update_hospital(hospital_name: str, name: str, endereco: str, cep: str):
+def update_hospital(hospital_name: str, name: str, address: str, cep: str):
     cursor = db_conn.cursor()
 
     try:
-        query = '''
-        UPDATE Hospital SET nome = %s, endereco = %s, cep = %s WHERE nome = %s
-        '''
-        hospital = (name, endereco, cep, hospital_name)
-        cursor.execute(query, hospital)
+        query: str = "UPDATE Hospital SET nome = %(name)s, endereco = %(address)s, cep = %(cep)s WHERE nome = %(hospital_name)s"
+        query_params: dict = {"name": name, "address": address, "cep": cep, "hospital_name": hospital_name}
+        cursor.execute(query, query_params)
         db_conn.commit()
     except:
         print("Ocorreu um erro ao executar a acao")
@@ -64,85 +58,79 @@ def update_hospital(hospital_name: str, name: str, endereco: str, cep: str):
         
     cursor.close()
     
-def delete_hospital(nome: str):
+def delete_hospital(name: str):
     cursor = db_conn.cursor()
 
     try:
-        query = '''
-        DELETE FROM Hospital WHERE nome = %s
-        '''
-        hospital = (nome)
-        cursor.execute(query, hospital)
+        query = "DELETE FROM Hospital WHERE nome = %(name)s"
+        query_params = {'name': name}
+        cursor.execute(query, query_params) # type: ignore
         db_conn.commit()
     except:
         print("Falha ao deletar os dados")
     finally:
-        print("Dados deletados com sucesso!")
+        affected_rows = cursor.rowcount
+        print(f"{affected_rows} registros atualizados.")
 
 def main() -> None:
-    sair = False
-    escolha: int = 0
+    leave: bool = False
+    choice: int = 0
 
     print("Bem-vindo,\nOque deseja fazer?\n")
-    while not sair:
-        print("\n0 - Sair\n1 - Registrar Hospital\n2 - Listar Hospitais\n3 - Atualizar Hospital")
+    while not leave:
+        print("\n0 - Sair\n1 - Registrar Hospital\n2 - Listar Hospitais\n3 - Atualizar Hospital\n4 - Deletar Hospital")
         try:
-            escolha = int(input("Escolha: "))
+            choice = int(input("Escolha: "))
         except:
             print("\nSomente numeros sao validos!")
 
-        if escolha == 0:
+        if choice == 0:
             print("\nAté mais!")
             break
 
-        elif escolha == 1:
-            nome: str = ""
-            endereco: str = ""
+        elif choice == 1:
+            name: str = ""
+            address: str = ""
             cep: str = ""
-
             try:
-                nome = str(input("(Hospital)Digite o nome: "))
-                endereco = str(input("(Hospital)Digite o endereco: "))
-                cep = str(input("(Hospital)Digite o CEP: "))
+                name = str(input("(Hospital)[CREATE] Digite o nome: "))
+                address = str(input("(Hospital)[CREATE] Digite o endereco: "))
+                cep = str(input("(Hospital)[CREATE] Digite o CEP: "))
             except:
                 print("Valores invalidos!")
             finally:
-                create_hospital(nome, endereco, cep)
+                create_hospital(name, address, cep)
 
-        elif escolha == 2:
+        elif choice == 2:
             try:
                 read_all_hospital()                
             except:
                 print("Falha ao completar a requisicao")
 
-        elif escolha == 3:
-            nome_hospital: str = ""
-            nome: str = ""
-            endereco: str = ""
+        elif choice == 3:
+            hospital_name: str = ""
+            name: str = ""
+            address: str = ""
             cep: str = ""
-
             try:
-                nome_hospital = str(input("(Hospital)[UPDATE] Nome do hospital a ser alterado: "))
-                nome = str(input("(Hospital)[UPDATE] Digite o nome: "))
-                endereco = str(input("(Hospital)[UPDATE] Digite o endereco: "))
+                hospital_name = str(input("(Hospital)[UPDATE] Nome do hospital a ser alterado: "))
+                name = str(input("(Hospital)[UPDATE] Digite o nome: "))
+                address = str(input("(Hospital)[UPDATE] Digite o endereco: "))
                 cep = str(input("(Hospital)[UPDATE] Digite o CEP: "))
             except:
                 print("Valores invalidos!")
             finally:
-                update_hospital(hospital_name=nome_hospital, name=nome, cep=cep, endereco=endereco)
+                update_hospital(hospital_name=hospital_name, name=name, cep=cep, address=address)
 
-        elif escolha == 4:
-            nome_hospital: str = ""
-
+        elif choice == 4:
+            hospital_name: str = ""
             try:
-                nome_hospital = str(input("(Hospital)[DELETE] Nome do hospital a ser deletado: "))
-
+                hospital_name = str(input("(Hospital)[DELETE] Nome do hospital a ser deletado: "))
             except:
                 print("Valores invalidos!")
-                pass
             finally:
-                delete_hospital(nome_hospital)
-                
+                delete_hospital(hospital_name)
+
         else:
             print("Valor Invalido!\n")
             
